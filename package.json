@@ -1,0 +1,12 @@
+{
+  "name": "shell",
+  "description": "This is a solid implementation of a POSIX-like shell. You’ve handled some of the trickiest parts of shell development, specifically",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run app/main.ts",
+    "dev-watch": "bun run --watch app/main.ts",
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
