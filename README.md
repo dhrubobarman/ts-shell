@@ -122,4 +122,3 @@ $ history 5
 * [ ] Logical operators (`&&` and `||`).
 * [ ] Background process execution (`&`).
 
-Would you like me to help you write a `package.json` file with the necessary scripts and dependencies to match this README?

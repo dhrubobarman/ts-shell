@@ -3,9 +3,18 @@
   "description": "This is a solid implementation of a POSIX-like shell. You’ve handled some of the trickiest parts of shell development, specifically",
   "type": "module",
   "scripts": {
-    "dev": "bun run app/main.ts",
-    "dev-watch": "bun run --watch app/main.ts",
+    "start": "bun run main.ts",
+    "dev": "bun --watch main.ts",
+    "build": "bun build ./main.ts --outdir ./dist --target bun",
+    "check": "bun x tsc --noEmit"
   },
+  "keywords": [
+    "shell",
+    "terminal",
+    "typescript",
+    "repl",
+    "posix"
+  ],
   "devDependencies": {
     "@types/bun": "latest"
   }
