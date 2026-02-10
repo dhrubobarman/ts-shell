@@ -1,124 +1,148 @@
-This is a solid implementation of a POSIX-like shell. You’ve handled some of the trickiest parts of shell development, specifically **nested quoting**, **pipelining**, and **IO redirection** (including stderr, which many skip).
-
-Here is a structured `README.md` that highlights the technical depth of your project.
+This is a robust, POSIX-like shell implementation built with **TypeScript** and powered by the **Bun** runtime. It handles everything from complex quote parsing and command history to multi-stage pipelining and file redirection.
 
 ---
 
-# TS-Shell
+# 🐚 BunShell
 
-A functional, POSIX-style shell environment built from scratch using **Node.js** and **TypeScript**. This project implements core shell mechanics, including process management, command pipelining, and a custom recursive-descent style parser for handling quotes and escapes.
+A high-performance, feature-complete shell written in TypeScript. BunShell provides a familiar terminal experience with support for standard POSIX syntax, including pipes, redirections, and tab-completion.
 
 ## 🚀 Features
 
-### 1. Core Shell Builtins
+### 1. Robust Command Parsing
 
-The shell includes native implementations of essential commands:
+The shell includes a custom tokenizer that handles the nuances of shell input:
 
-* `echo`: Print text to standard output.
-* `pwd`: Print the current working directory.
-* `cd`: Navigate directories (supports `~` for home).
-* `type`: Locate a command (builtin or external disk path).
-* `exit`: Gracefully shut down the shell and save history.
-* `history`: Manage command history with support for flags (`-a` append, `-r` read, `-w` write).
+* **Single Quotes (`'`)**: Preserves the literal value of every character within the quotes.
+* **Double Quotes (`"`)**: Preserves literal values but allows for specific escapes (`\"`, `\\`, etc.).
+* **Backslash Escaping (`\`)**: Supports escaping special characters outside of quotes.
+* **Argument Splitting**: Correctly handles whitespace-delimited arguments.
 
-### 2. Advanced Command Execution
+### 2. Advanced Redirection
 
-* **External Commands**: Automatically searches your system `$PATH` to execute binaries (like `ls`, `grep`, or `cat`).
-* **Pipelining (`|`)**: Support for chaining multiple commands together, passing the output of one as the input to the next.
-* **IO Redirection**:
-* `>` or `1>`: Redirect stdout (overwrite).
-* `>>` or `1>>`: Redirect stdout (append).
-* `2>`: Redirect stderr (overwrite).
-* `2>>`: Redirect stderr (append).
+Supports standard output and error redirection with both overwrite and append modes:
+
+* **`>` or `1>**`: Redirect standard output (overwrite).
+* **`>>` or `1>>**`: Redirect standard output (append).
+* **`2>`**: Redirect standard error (overwrite).
+* **`2>>`**: Redirect standard error (append).
+
+### 3. Pipelining (`|`)
+
+You can chain multiple commands together. The shell manages the data flow between processes, allowing you to mix and match **external commands** (like `grep` or `ls`) and **shell builtins** (like `echo` or `history`) within the same pipeline.
+
+### 4. Smart Tab Completion
+
+* **Builtins & PATH**: Completes command names from shell builtins and every executable found in your `$PATH`.
+* **LCP (Longest Common Prefix)**: Automatically completes the shared portion of multiple matches.
+* **Visual Feedback**:
+* Single Tab: Completes the command or sounds a system bell if ambiguous.
+* Double Tab: Lists all possible matches (standard bash/zsh behavior).
 
 
 
-### 3. Interactive UX
+### 5. Persistent Command History
 
-* **Tab Completion**: Smart completion for builtins and system executables. Includes **Longest Common Prefix (LCP)** logic and "bell" alerts for multiple matches.
-* **Persistent History**: Loads previous sessions from your `HISTFILE` and saves new commands upon exit.
-* **Robust Parsing**: Handles single quotes (`'`), double quotes (`"`), and backslash escapes (`\`) according to standard shell behavior.
+* **Automatic Loading**: Reads previous history from your `$HISTFILE` on startup.
+* **Session History**: Keeps track of all commands entered during the session.
+* **Manual Management**:
+* `history`: View recent commands.
+* `history -a <file>`: Append new session entries to a file.
+* `history -r <file>`: Read history from a file into the current session.
+* `history -w <file>`: Write the current session history to a file.
+
+
+
+### 6. Built-in Commands
+
+Includes native implementations of:
+
+* `echo`: Print arguments to stdout.
+* `pwd`: Print current working directory.
+* `cd`: Change directory (supports `~` for home).
+* `type`: Locate a command (identifies builtins vs. external binaries).
+* `history`: Manage command history.
+* `exit`: Gracefully close the shell and save history.
 
 ---
 
-## 🛠 Installation & Setup
+## 🛠 Installation & Usage
 
-1. **Clone the repository:**
+### Prerequisites
+
+* [Bun](https://bun.sh/) installed on your system.
+
+### Running the Shell
+
+1. Clone the repository.
+2. Install dependencies:
 ```bash
-git clone https://github.com/dhrubobarman/ts-shell.git
-cd ts-shell
+bun install
 
 ```
 
 
-2. **Install dependencies:**
+3. Start the shell:
 ```bash
-npm install
+bun start
 
 ```
 
 
-3. **Compile and Run:**
-```bash
-# To run directly using ts-node
-npx ts-node main.ts
 
-# Or build to JS
-npm run build
-node dist/main.js
+### Development Mode
+
+To run with hot-reloading (the shell will restart when you save changes):
+
+```bash
+bun dev
 
 ```
 
+### Building
 
+To compile the shell into a standalone binary:
+
+```bash
+bun run build
+
+```
 
 ---
 
 ## 📂 Project Structure
 
-| File | Responsibility |
-| --- | --- |
-| **`main.ts`** | The entry point. Manages the REPL loop, signal handling, and primary execution logic. |
-| **`utils.ts`** | The "engine room." Contains the command parser, pipeline handler, and builtin logic. |
-| **`constants.ts`** | Centralized state and configuration, including path caching and history management. |
+* **`main.ts`**: The entry point. Contains the REPL loop, redirection logic, and external process spawning.
+* **`utils.ts`**: The "brains" of the operation. Contains the parser, pipeline handler, tab-completion logic, and builtin implementations.
+* **`constants.ts`**: Manages shared state like the command history, executable cache (from PATH), and environment variables.
 
 ---
 
-## 💡 Usage Examples
+## 📝 Example Usage
 
-**Running a pipeline with redirection:**
+**Piping and Redirection:**
 
 ```bash
-$ echo "Hello World" | tr 'a-z' 'A-Z' > output.txt
+$ echo "hello world" | type cat > output.txt
+$ cat < output.txt
+cat is /usr/bin/cat
 
 ```
 
-**Checking command types:**
+**Complex Quoting:**
 
 ```bash
-$ type cd
-cd is a shell builtin
+$ echo "It's a \"beautiful\" day"
+It's a "beautiful" day
+
+```
+
+**Navigating & Locating:**
+
+```bash
+$ cd /usr/bin
 $ type ls
-ls is /bin/ls
+ls is /usr/bin/ls
 
 ```
 
-**Using history:**
-
-```bash
-$ history 5
-    1  ls -la
-    2  cd src
-    3  cat main.ts
-    4  echo "test"
-    5  history 5
-
-```
-
----
-
-## 🛠 Future Roadmap
-
-* [ ] Support for environment variable expansion (e.g., `echo $USER`).
-* [ ] Logical operators (`&&` and `||`).
-* [ ] Background process execution (`&`).
-
+Would you like me to add a specific section for **Contribution Guidelines** or expand on the **Pipeline implementation** details?
