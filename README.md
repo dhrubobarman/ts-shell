@@ -45,7 +45,7 @@ The shell includes native implementations of essential commands:
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/your-username/ts-shell.git
+git clone https://github.com/dhrubobarman/ts-shell.git
 cd ts-shell
 
 ```
