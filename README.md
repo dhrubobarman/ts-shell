@@ -2,7 +2,7 @@ This is a robust, POSIX-like shell implementation built with **TypeScript** and 
 
 ---
 
-# 🐚 BunShell
+# BunShell
 
 A high-performance, feature-complete shell written in TypeScript. BunShell provides a familiar terminal experience with support for standard POSIX syntax, including pipes, redirections, and tab-completion.
 
